@@ -204,16 +204,32 @@
 
 (defn init []
   (.addEventListener js/window "resize" (fn [_] (set-mouse-wha)))
-  (.addEventListener canvas "mouseenter" (fn [_] (swap! mouse assoc :mouse-on true)))
-  (.addEventListener canvas "mouseleave" (fn [_] (swap! mouse assoc :mouse-on false)))
-  (.addEventListener canvas "mousemove" (fn [e]
-                                          (let [mouse @mouse
-                                                x (->> e .-offsetX (map-mouse-x mouse))
-                                                y (->> e .-offsetY (map-mouse-y mouse))]
-                                            (some->> elements
-                                                     (remove (fn [element] (-> element .-alive)))
-                                                     (first)
-                                                     (reanimate-element x y)))))
+  (doto canvas
+    (.addEventListener "mouseenter" (fn [_] (swap! mouse assoc :mouse-on true)))
+    (.addEventListener "mouseleave" (fn [_] (swap! mouse assoc :mouse-on false)))
+    (.addEventListener "mousemove" (fn [e]
+                                     (.preventDefault e)
+                                     (let [mouse @mouse
+                                           x (->> e .-offsetX (map-mouse-x mouse))
+                                           y (->> e .-offsetY (map-mouse-y mouse))]
+                                       (some->> elements
+                                                (remove (fn [element] (-> element .-alive)))
+                                                (first)
+                                                (reanimate-element x y)))))
+    (.addEventListener "touchmove" (fn [e]
+                                     (.preventDefault e)
+                                     (let [mouse @mouse
+                                           touches (.-changedTouches e)]
+                                       (js/console.log "touches:" (.-length touches))
+                                       (dorun
+                                         (map (fn [[x y] element]
+                                                (js/console.log "touch:" (.toFixed x 2) (.toFixed y 2))
+                                                (reanimate-element x y element))
+                                           (->> (range (.-length touches))
+                                                (map (fn [i] (.item touches i)))
+                                                (map (fn [e] [(->> e .-clientX (map-mouse-x mouse))
+                                                              (->> e .-clientY (map-mouse-y mouse))])))
+                                           (->> elements (remove (fn [e] (-> e .-alive))))))))))
 
   (game-loop 0))
 

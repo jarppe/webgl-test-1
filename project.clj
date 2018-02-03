@@ -18,7 +18,7 @@
                                    :source-map-timestamp true}}
                        {:id "min"
                         :source-paths ["src"]
-                        :compiler {:output-to "resources/public/js/cljs-webgl-test-1.js"
+                        :compiler {:output-to "docs/js/cljs-webgl-test-1.js"
                                    :main webgl-test.core
                                    :optimizations :advanced
                                    :pretty-print false
@@ -26,10 +26,14 @@
 
   :figwheel {:css-dirs ["resources/public/css"]
              :open-file-command "open-in-intellij"
-             :repl false}
+             :repl false
+             :server-ip "0.0.0.0"}
 
   :profiles {:dev {:clean-targets ^{:protect false} ["resources/public/js" :target-path]}}
 
-  :aliases {"dist" ["do"
+  :aliases {"dev" ["do"
+                   ["clean"]
+                   ["figwheel"]]
+            "dist" ["do"
                     ["clean"]
                     ["cljsbuild" "once" "min"]]})

@@ -2,8 +2,6 @@
   (:require [webgl-test.gl :as gl]
             [webgl-test.util :as u]))
 
-(js/console.log "Here we go again...")
-
 (defn make-shaders [ctx]
   (->> [[:vertex-shader
          "attribute vec3 aVertexPosition;
@@ -222,4 +220,4 @@
 (set-mouse-wha)
 (defonce _ (init))
 
-
+(js/console.log "Page ready")

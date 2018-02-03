@@ -196,6 +196,10 @@
       (gl/uniform-matrix-4fv "uPMatrix" false (from-scaling m (u/js-vec (/ 1.0 aspect-x) (/ 1.0 aspect-y))))
       (bind-circle-pos)
       (draw-elements elements)
+      #_(bind-circle-color 0)
+      #_(draw-circle (-> m
+                       (from-translation (u/js-vec 0.0 0.0 0.0))
+                       (scale (u/js-vec 1.0 1.0))))
       (gl/flush)))
 
 (defn game-loop [_]

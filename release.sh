@@ -17,8 +17,8 @@ rm -fr ./docs/*
 cp -r ./resources/public/index.html ./docs/
 cp -r ./resources/public/lib ./docs/
 lein dist
-#git add ./docs
-#git commit -m "$message"
-#git push
+git add ./docs
+git commit -m "$message"
+git push
 
 echo "Done"

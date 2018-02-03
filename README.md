@@ -14,6 +14,11 @@ To create a production build run:
 
     lein dist
 
+## Issues
+
+Works on Chrome and Firefox (at least on Mac), on Safari the alpha does not work. On iOS Safari does
+not show anything. I can see that the touch events work, but the WebGL rendering does not show anything. 
+
 ## License
 
 Copyright © 2018 Jarppe Länsiö

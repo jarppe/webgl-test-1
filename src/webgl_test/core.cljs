@@ -10,7 +10,7 @@
           uniform mat4 uPMatrix;
           varying vec4 vColor;
           void main(void) {
-            gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 2.0);
+            gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
             vColor = aVertexColor;
           }"]
         [:fragment-shader
@@ -198,8 +198,8 @@
       (draw-elements elements)
       #_(bind-circle-color 0)
       #_(draw-circle (-> m
-                       (from-translation (u/js-vec 0.0 0.0 0.0))
-                       (scale (u/js-vec 1.0 1.0))))
+                         (from-translation (u/js-vec 0.0 0.0 0.0))
+                         (scale (u/js-vec 1.0 1.0))))
       (gl/flush)))
 
 (defn game-loop [_]
@@ -207,10 +207,9 @@
   (draw-scene (-> ctx (merge @mouse))))
 
 (defn init []
-  (.addEventListener js/window "resize" (fn [_] (set-mouse-wha)))
+  (doto js/window
+    (.addEventListener "resize" (fn [_] (set-mouse-wha))))
   (doto canvas
-    (.addEventListener "mouseenter" (fn [_] (swap! mouse assoc :mouse-on true)))
-    (.addEventListener "mouseleave" (fn [_] (swap! mouse assoc :mouse-on false)))
     (.addEventListener "mousemove" (fn [e]
                                      (.preventDefault e)
                                      (let [mouse @mouse
@@ -224,16 +223,14 @@
                                      (.preventDefault e)
                                      (let [mouse @mouse
                                            touches (.-changedTouches e)]
-                                       (js/console.log "touches:" (.-length touches))
                                        (dorun
                                          (map (fn [[x y] element]
-                                                (js/console.log "touch:" (.toFixed x 2) (.toFixed y 2))
                                                 (reanimate-element x y element))
-                                           (->> (range (.-length touches))
-                                                (map (fn [i] (.item touches i)))
-                                                (map (fn [e] [(->> e .-clientX (map-mouse-x mouse))
-                                                              (->> e .-clientY (map-mouse-y mouse))])))
-                                           (->> elements (remove (fn [e] (-> e .-alive))))))))))
+                                              (->> (range (.-length touches))
+                                                   (map (fn [i] (.item touches i)))
+                                                   (map (fn [e] [(->> e .-clientX (map-mouse-x mouse))
+                                                                 (->> e .-clientY (map-mouse-y mouse))])))
+                                              (->> elements (remove (fn [e] (-> e .-alive))))))))))
 
   (game-loop 0))
 
